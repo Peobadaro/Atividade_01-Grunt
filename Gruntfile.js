@@ -33,6 +33,20 @@ module.exports = function(grunt) {
             }
         },
 
+        // JavaScript minification
+        uglify: {
+            options: {
+                mangle: true,
+                compress: true,
+                sourceMap: true
+            },
+            target: {
+                files: {
+                    'dist/js/scripts.min.js': ['src/js/**/*.js']
+                }
+            }
+        },
+
         // HTML minification
         htmlmin: {
             dist: {
@@ -60,6 +74,10 @@ module.exports = function(grunt) {
                         {
                             match: /styles\.css/g,
                             replacement: 'styles.min.css'
+                        },
+                        {
+                            match: /scripts\.js/g,
+                            replacement: 'scripts.min.js'
                         }
                     ]
                 },
@@ -115,7 +133,7 @@ module.exports = function(grunt) {
             // Watch for JavaScript changes
             scripts: {
                 files: ['src/js/**/*.js'],
-                tasks: [],
+                tasks: ['uglify'],
                 options: {
                     livereload: true
                 }
@@ -125,7 +143,8 @@ module.exports = function(grunt) {
         // Clean task
         clean: {
             css: ['dist/css/*'],
-            html: ['dist/*.html']
+            html: ['dist/*.html'],
+            js: ['dist/js/*']
         }
     });
 
@@ -137,8 +156,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-replace');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     // Register tasks
-    grunt.registerTask('default', ['clean', 'less:development', 'connect', 'watch']);
-    grunt.registerTask('build', ['clean', 'less:production', 'cssmin', 'htmlmin', 'replace']);
+    grunt.registerTask('default', ['clean', 'less:development', 'uglify', 'connect', 'watch']);
+    grunt.registerTask('build', ['clean', 'less:production', 'cssmin', 'uglify', 'htmlmin', 'replace']);
 }; 
