@@ -33,20 +33,99 @@ module.exports = function(grunt) {
             }
         },
 
+        // HTML minification
+        htmlmin: {
+            dist: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeOptionalTags: true,
+                    minifyJS: true,
+                    minifyCSS: true
+                },
+                files: {
+                    'dist/index.html': 'index.html'
+                }
+            }
+        },
+
+        // HTML replacement
+        replace: {
+            dist: {
+                options: {
+                    patterns: [
+                        {
+                            match: /styles\.css/g,
+                            replacement: 'styles.min.css'
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['dist/index.html'],
+                        dest: 'dist/'
+                    }
+                ]
+            }
+        },
+
+        // Connect server configuration
+        connect: {
+            server: {
+                options: {
+                    port: 9000,
+                    base: '.',
+                    livereload: true,
+                    open: true
+                }
+            }
+        },
+
         // Watch for changes
         watch: {
+            options: {
+                // Enable livereload for automatic browser refresh
+                livereload: true,
+                // Don't spawn new processes for better performance
+                spawn: false,
+                // Show notifications for file changes
+                interrupt: true
+            },
             styles: {
                 files: ['src/less/**/*.less'],
                 tasks: ['less:development'],
                 options: {
-                    spawn: false
+                    // Show which file changed
+                    event: ['changed', 'added', 'deleted']
+                }
+            },
+            // Watch for HTML changes
+            html: {
+                files: ['**/*.html'],
+                tasks: ['htmlmin'],
+                options: {
+                    livereload: true
+                }
+            },
+            // Watch for JavaScript changes
+            scripts: {
+                files: ['src/js/**/*.js'],
+                tasks: [],
+                options: {
+                    livereload: true
                 }
             }
         },
 
         // Clean task
         clean: {
-            css: ['dist/css/*']
+            css: ['dist/css/*'],
+            html: ['dist/*.html']
         }
     });
 
@@ -55,8 +134,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks('grunt-replace');
 
     // Register tasks
-    grunt.registerTask('default', ['clean', 'less:development', 'watch']);
-    grunt.registerTask('build', ['clean', 'less:production', 'cssmin']);
+    grunt.registerTask('default', ['clean', 'less:development', 'connect', 'watch']);
+    grunt.registerTask('build', ['clean', 'less:production', 'cssmin', 'htmlmin', 'replace']);
 }; 
