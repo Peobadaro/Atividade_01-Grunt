@@ -1,0 +1,50 @@
+// Variables
+@primary-color: #3498db;
+@secondary-color: #2ecc71;
+@font-family: 'Roboto', sans-serif;
+@base-font-size: 16px;
+
+// Mixins
+.border-radius(@radius: 5px) {
+    border-radius: @radius;
+    -webkit-border-radius: @radius;
+    -moz-border-radius: @radius;
+}
+
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+// Base styles
+body {
+    font-family: @font-family;
+    font-size: @base-font-size;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+// Component styles
+.header {
+    background-color: @primary-color;
+    color: white;
+    padding: 20px;
+    .border-radius(10px);
+    
+    h1 {
+        margin: 0;
+        font-size: @base-font-size * 2;
+    }
+}
+
+.button {
+    background-color: @secondary-color;
+    color: white;
+    padding: 10px 20px;
+    .border-radius();
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: darken(@secondary-color, 10%);
+    }
+} 
