@@ -1,62 +1,85 @@
-# Grunt Project Setup
+# Tic Tac Toe Game
 
-This project demonstrates the use of Grunt for automating LESS compilation and CSS optimization tasks.
-
-## Project Structure
-
-```
-├── src/
-│   └── less/
-│       └── styles.less
-├── dist/
-│   └── css/
-│       ├── styles.css
-│       └── styles.min.css
-├── Gruntfile.js
-└── package.json
-```
+A simple Tic Tac Toe game built with HTML, CSS, and JavaScript, using Grunt for task automation.
 
 ## Features
 
-- LESS compilation with source maps
-- CSS minification
-- Automatic file watching
-- Development and production builds
-- Clean task for removing generated files
+- Classic Tic Tac Toe gameplay
+- Responsive design
+- Player turn indicator
+- Win detection
+- Draw detection
+- Reset game functionality
 
-## Setup
+## Prerequisites
 
-1. Install dependencies:
+Before you begin, ensure you have installed:
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+```
+
+2. Navigate to the project directory:
+```bash
+cd tic-tac-toe
+```
+
+3. Install dependencies:
 ```bash
 npm install
 ```
 
-2. Start development server:
+## Development
+
+To start development with live reload:
 ```bash
 npm start
 ```
 
-3. Build for production:
+This will:
+- Clean the dist directory
+- Minify CSS, JavaScript, and HTML files
+- Copy assets
+- Watch for changes and rebuild automatically
+
+## Build
+
+To build the project for production:
 ```bash
 npm run build
 ```
 
-## Development Workflow
+This will create a `dist` directory with optimized files ready for deployment.
 
-- The `npm start` command will:
-  - Clean the dist directory
-  - Compile LESS files with source maps
-  - Watch for changes in LESS files
+## Project Structure
 
-- The `npm run build` command will:
-  - Clean the dist directory
-  - Compile and minify LESS files for production
+```
+.
+├── src/
+│   ├── css/
+│   │   └── main.css
+│   ├── js/
+│   │   └── main.js
+│   └── index.html
+├── Gruntfile.js
+├── package.json
+└── README.md
+```
 
-## LESS Features Used
+## Grunt Tasks
 
-- Variables
-- Mixins
-- Nested rules
-- Color functions
-- Import statements
-- Google Fonts integration 
+- `cssmin`: Minifies CSS files
+- `uglify`: Minifies JavaScript files
+- `htmlmin`: Minifies HTML files
+- `clean`: Cleans the dist directory
+- `copy`: Copies static assets
+- `watch`: Watches for file changes
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details. 
