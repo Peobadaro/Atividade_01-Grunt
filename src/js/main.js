@@ -1,7 +1,8 @@
 const gameBoard = document.querySelector('.game-board');
 const cells = document.querySelectorAll('.cell');
-const status = document.querySelector('.status');
+const gameStatus = document.querySelector('.game-status');
 const resetButton = document.querySelector('.reset-btn');
+const playAgainButton = document.querySelector('.play-again');
 const winningMessage = document.querySelector('.winning-message');
 const winningMessageText = document.querySelector('.winning-message div');
 const difficultySelect = document.getElementById('difficulty');
@@ -27,10 +28,11 @@ const winningConditions = [
     [2, 4, 6]
 ];
 
-const winningMessageTexts = {
-    X: 'Player X Wins!',
-    O: 'Player O Wins!',
-    draw: 'Game ended in a draw!'
+const messages = {
+    playerTurn: (player) => `Vez do jogador ${player}`,
+    playerWin: (player) => `Jogador ${player} venceu!`,
+    draw: 'Empate!',
+    gameStart: 'Começar o jogo ou selecionar jogador'
 };
 
 function handleCellClick(clickedCellEvent) {
@@ -50,7 +52,7 @@ function handleCellClick(clickedCellEvent) {
     } else {
         handlePlayerChange();
         if (currentPlayer === 'O') {
-            setTimeout(makeComputerMove, 500);
+            setTimeout(makeComputerMove, 600);
         }
     }
 }
@@ -59,6 +61,12 @@ function handleCellPlayed(clickedCell, clickedCellIndex) {
     gameState[clickedCellIndex] = currentPlayer;
     clickedCell.textContent = currentPlayer;
     clickedCell.classList.add(currentPlayer.toLowerCase());
+    
+    // Adiciona animação de entrada
+    clickedCell.style.transform = 'scale(0)';
+    setTimeout(() => {
+        clickedCell.style.transform = 'scale(1)';
+    }, 50);
 }
 
 function checkWin() {
@@ -74,27 +82,32 @@ function checkDraw() {
 }
 
 function handleWin() {
-    winningMessageText.textContent = winningMessageTexts[currentPlayer];
-    winningMessage.classList.add('show');
+    gameStatus.textContent = messages.playerWin(currentPlayer);
     gameActive = false;
     scores[currentPlayer]++;
     updateScoreDisplay();
+    showWinningMessage(messages.playerWin(currentPlayer));
 }
 
 function handleDraw() {
-    winningMessageText.textContent = winningMessageTexts.draw;
-    winningMessage.classList.add('show');
+    gameStatus.textContent = messages.draw;
     gameActive = false;
+    showWinningMessage(messages.draw);
 }
 
 function handlePlayerChange() {
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    status.textContent = `Player ${currentPlayer}'s turn`;
+    gameStatus.textContent = messages.playerTurn(currentPlayer);
 }
 
 function updateScoreDisplay() {
     playerXScore.textContent = scores.X;
     playerOScore.textContent = scores.O;
+}
+
+function showWinningMessage(message) {
+    winningMessageText.textContent = message;
+    winningMessage.classList.add('show');
 }
 
 function makeComputerMove() {
@@ -194,24 +207,28 @@ function handleResetGame() {
     gameActive = true;
     currentPlayer = 'X';
     gameState = ['', '', '', '', '', '', '', '', ''];
-    status.textContent = `Player ${currentPlayer}'s turn`;
+    gameStatus.textContent = messages.playerTurn(currentPlayer);
     winningMessage.classList.remove('show');
+    
     cells.forEach(cell => {
         cell.textContent = '';
         cell.classList.remove('x', 'o');
+        cell.style.transform = '';
     });
     
     if (currentPlayer === 'O') {
-        setTimeout(makeComputerMove, 500);
+        setTimeout(makeComputerMove, 600);
     }
 }
 
+// Event Listeners
 cells.forEach(cell => {
     cell.addEventListener('click', handleCellClick);
 });
 
 resetButton.addEventListener('click', handleResetGame);
-
+playAgainButton.addEventListener('click', handleResetGame);
 difficultySelect.addEventListener('change', handleResetGame);
 
+// Initialize the game
 handleResetGame(); 
