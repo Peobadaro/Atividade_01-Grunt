@@ -198,3 +198,135 @@ function gerarGrafico(anos, valorInicial, taxa, depositoMensal, inflacao) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const gameBoard = document.querySelector('.game-board');
+    const cells = document.querySelectorAll('[data-cell]');
+    const currentPlayerText = document.getElementById('current-player');
+    const winningMessage = document.getElementById('winning-message');
+    const winningMessageText = document.querySelector('[data-winning-message-text]');
+    const restartButton = document.getElementById('restart-button');
+    const resetButton = document.getElementById('reset-game');
+
+    let currentPlayer = 'X';
+    let gameActive = true;
+    let gameState = ['', '', '', '', '', '', '', '', ''];
+
+    const winningCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Linhas
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colunas
+        [0, 4, 8], [2, 4, 6]             // Diagonais
+    ];
+
+    // Adiciona efeito sonoro
+    const playSound = (type) => {
+        const audio = new Audio();
+        audio.volume = 0.2;
+        
+        switch(type) {
+            case 'move':
+                audio.src = 'data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...'; // Som curto
+                break;
+            case 'win':
+                audio.src = 'data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU...'; // Som de vitória
+                break;
+        }
+        
+        audio.play().catch(() => {}); // Ignora erros de reprodução
+    };
+
+    // Adiciona animação ao fazer jogada
+    const addMoveAnimation = (cell) => {
+        cell.style.transform = 'scale(0)';
+        setTimeout(() => {
+            cell.style.transform = 'scale(1)';
+        }, 50);
+    };
+
+    const handleCellClick = (e) => {
+        const cell = e.target;
+        const index = Array.from(cells).indexOf(cell);
+
+        if (gameState[index] !== '' || !gameActive) return;
+
+        // Adiciona a jogada com animação
+        gameState[index] = currentPlayer;
+        cell.textContent = currentPlayer;
+        cell.classList.add(currentPlayer.toLowerCase());
+        addMoveAnimation(cell);
+        playSound('move');
+
+        // Verifica vitória ou empate
+        if (checkWin()) {
+            endGame(false);
+        } else if (isDraw()) {
+            endGame(true);
+        } else {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            currentPlayerText.textContent = currentPlayer;
+            // Adiciona efeito de highlight no texto
+            currentPlayerText.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                currentPlayerText.style.transform = 'scale(1)';
+            }, 200);
+        }
+    };
+
+    const checkWin = () => {
+        return winningCombinations.some(combination => {
+            return combination.every(index => {
+                return gameState[index] === currentPlayer;
+            });
+        });
+    };
+
+    const isDraw = () => {
+        return gameState.every(cell => cell !== '');
+    };
+
+    const endGame = (draw) => {
+        gameActive = false;
+        if (draw) {
+            winningMessageText.textContent = 'Empate!';
+        } else {
+            winningMessageText.textContent = `${currentPlayer} Venceu!`;
+            playSound('win');
+        }
+        winningMessage.classList.add('show');
+    };
+
+    const startGame = () => {
+        gameActive = true;
+        currentPlayer = 'X';
+        gameState.fill('');
+        cells.forEach(cell => {
+            cell.textContent = '';
+            cell.classList.remove('x', 'o');
+            cell.style.transform = 'scale(1)';
+        });
+        currentPlayerText.textContent = currentPlayer;
+        winningMessage.classList.remove('show');
+    };
+
+    // Event Listeners
+    cells.forEach(cell => {
+        cell.addEventListener('click', handleCellClick);
+        
+        // Adiciona efeito hover
+        cell.addEventListener('mouseenter', () => {
+            if (cell.textContent === '' && gameActive) {
+                cell.style.backgroundColor = '#f0f0f0';
+            }
+        });
+        
+        cell.addEventListener('mouseleave', () => {
+            cell.style.backgroundColor = 'white';
+        });
+    });
+
+    restartButton.addEventListener('click', startGame);
+    resetButton.addEventListener('click', startGame);
+
+    // Inicia o jogo
+    startGame();
+});

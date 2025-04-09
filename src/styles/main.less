@@ -6,10 +6,180 @@
 @corDoButton: #1b263b;
 @textoDoButton: #f1faee;
 
+// Variáveis
+@primary-color: #2c3e50;
+@accent-color: #3498db;
+@background-color: #ecf0f1;
+@cell-size: 100px;
+@border-radius: 10px;
+
+// Mixins
+.transition {
+    transition: all 0.3s ease;
+}
+
+.box-shadow {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+// Reset e estilos base
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
 body {
-    background: linear-gradient(@corDeFundo2,@corDeFundo1, @corDeFundo2);
-    font-family: @fontePrincipal;
-    color: @corDoTexto;
+    background-color: @background-color;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: @border-radius;
+    .box-shadow();
+    max-width: 500px;
+    width: 100%;
+}
+
+h1 {
+    color: @primary-color;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+// Informações do jogo
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: fadeout(@primary-color, 95%);
+    border-radius: @border-radius;
+
+    .status {
+        font-size: 1.2em;
+        color: @primary-color;
+        
+        #current-player {
+            font-weight: bold;
+            color: @accent-color;
+        }
+    }
+}
+
+// Tabuleiro
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.cell {
+    width: @cell-size;
+    height: @cell-size;
+    background-color: white;
+    border: 2px solid fadeout(@primary-color, 90%);
+    border-radius: @border-radius;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    font-weight: bold;
+    cursor: pointer;
+    .transition();
+    .box-shadow();
+
+    &:hover {
+        background-color: fadeout(@accent-color, 95%);
+        transform: translateY(-2px);
+    }
+
+    &.x {
+        color: @accent-color;
+    }
+
+    &.o {
+        color: @primary-color;
+    }
+}
+
+// Botões
+button {
+    background-color: @accent-color;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: @border-radius;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    .transition();
+
+    &:hover {
+        background-color: darken(@accent-color, 10%);
+        transform: translateY(-2px);
+    }
+}
+
+// Mensagem de vitória
+.winning-message {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 2em;
+    text-align: center;
+
+    &.show {
+        display: flex;
+    }
+
+    button {
+        margin-top: 20px;
+        background-color: white;
+        color: @primary-color;
+
+        &:hover {
+            background-color: @accent-color;
+            color: white;
+        }
+    }
+}
+
+// Responsividade
+@media (max-width: 500px) {
+    .cell {
+        width: 80px;
+        height: 80px;
+        font-size: 2em;
+    }
+
+    .game-info {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
 }
 
 .text-principal {
